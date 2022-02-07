@@ -1,0 +1,24 @@
+/* 登录/注册 */
+.action-box{
+    width: 400px; margin: auto;
+}
+.auth-footer{
+    margin-top: 20px;
+}
+.auth-link {
+    font-size: 12px; color: #141414;
+}
+
+.right-table{
+    margin: 24px;
+    padding: 24px;
+    background-color: #FFF;
+}
+.ant-layout-sider{
+    z-index: 101;
+}
+
+.ant-layout-header{
+    box-shadow: 0 1px 4px rgb(0 21 41 / 8%);
+    z-index: 100;
+}

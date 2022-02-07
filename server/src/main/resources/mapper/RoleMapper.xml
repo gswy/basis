@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="xin.wanyun.server.mapper.RoleMapper">
+
+    <!-- 根据角色id查询权限信息 -->
+    <select id="getRolePermissions" resultMap="Permission">
+        SELECT
+            roles.id AS rid,
+            roles_has_permissions.role_id,
+            roles_has_permissions.permission_id,
+            permissions.id AS pid,
+            permissions.name,
+            permissions.guard
+        FROM
+            roles, roles_has_permissions, permissions
+        WHERE
+            roles.id = roles_has_permissions.role_id AND roles_has_permissions.permission_id = permissions.id
+        <if test="guard != null">
+            AND permissions.guard = #{guard}
+        </if>
+        <if test="role_ids != null">
+            IN (
+                <foreach item="item" collection="role_ids" separator=",">
+                    #{item}
+                </foreach>
+            )
+        </if>
+    </select>
+
+    <!-- 自定义Permission映射 -->
+    <resultMap id="Permission" type="xin.wanyun.server.entity.Permission">
+        <result property="Id" column="pid"/>
+        <result property="Name" column="name"/>
+    </resultMap>
+
+</mapper>

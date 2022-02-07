@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="xin.wanyun.server.mapper.AdminUserMapper">
+
+    <!-- 根据用户id查询角色信息 -->
+    <select id="getAdminRole" resultMap="Role">
+        SELECT
+            admin_users.id AS uid,
+            users_has_roles.role_id,
+            users_has_roles.user_id,
+            roles.id AS rid,
+            roles.name,
+            roles.guard
+        FROM
+            admin_users, users_has_roles, roles
+        WHERE
+            admin_users.id = users_has_roles.user_id AND users_has_roles.role_id = roles.id
+        <if test="guard != null">
+            AND roles.guard = #{guard}
+        </if>
+        <if test="user_id != null">
+            AND admin_users.id = #{user_id}
+        </if>
+    </select>
+    <resultMap id="Role" type="xin.wanyun.server.entity.Role">
+        <result property="Id" column="rid"/>
+        <result property="Name" column="name"/>
+    </resultMap>
+
+    <!-- 根据用户ID获取权限 -->
+    <select id="getAdminPermission" resultMap="Permission">
+        SELECT
+            admin_users.id AS uid,
+            users_has_roles.*,
+            roles.id AS rid,
+            roles.guard AS role_guard,
+            roles_has_permissions.*,
+            permissions.id AS pid,
+            permissions.name,
+            permissions.guard AS permission_guard
+        FROM
+            admin_users, users_has_roles, roles, roles_has_permissions, permissions
+        WHERE
+            admin_users.id = users_has_roles.user_id AND
+            users_has_roles.role_id = roles.id AND
+            roles.id = roles_has_permissions.role_id AND
+            roles_has_permissions.permission_id = permissions.id AND
+            roles.guard = #{guard} AND permissions.guard = #{guard} AND
+            admin_users.id = #{user_id};
+    </select>
+    <resultMap id="Permission" type="xin.wanyun.server.entity.Permission">
+        <result property="Id" column="pid"/>
+        <result property="Name" column="name"/>
+    </resultMap>
+
+</mapper>
